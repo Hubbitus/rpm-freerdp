@@ -223,9 +223,6 @@ find %{buildroot} -name "*.a" -delete
 %{_libdir}/pkgconfig/winpr.pc
 
 %changelog
-* Tue Jan 05 2016 Hubbitus <pahan@hubbitus.info> 2.0.0-4.git.b02943a
-- Try built with tito
-
 * Sun Dec 13 2015 Simone Caronni <negativo17@gmail.com> - 2:2.0.0-4.git.b02943a
 - Add FFMpeg/x264 build conditional.
 
