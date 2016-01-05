@@ -1,4 +1,4 @@
-%global commit0 b02943ae98d76420e5d6ee801a2d54db1d28f3ef
+%global commit0 c3ce0c3b09bf10f388011e01bb4091e351af39e9
 %global shortcommit0 %(c=%{commit0}; echo ${c:0:7})
 
 # Can be rebuilt with FFmpeg/H264 support enabled by passing "--with=ffmpeg" and
@@ -43,6 +43,7 @@ BuildRequires:  systemd-devel
 %{?_with_x264:BuildRequires:  x264-devel}
 BuildRequires:  xmlto
 BuildRequires:  zlib-devel
+BuildRequires:  chrpath
 
 Provides:       xfreerdp = %{version}-%{release}
 Requires:       %{name}-libs%{?_isa} = %{?epoch}:%{version}-%{release}
@@ -169,6 +170,9 @@ make %{?_smp_mflags}
 popd
 
 %install
+# Again remove RPATH
+chrpath --delete winpr/tools/makecert/cli/winpr-makecert
+
 make install DESTDIR=%{buildroot} INSTALL='install -p'
 install -p -m 0755 winpr/tools/makecert/cli/winpr-makecert %{buildroot}%{_bindir}/
 
@@ -184,6 +188,7 @@ find %{buildroot} -name "*.a" -delete
 
 %files
 %{_bindir}/winpr-makecert
+%{_bindir}/winpr-hash
 %{_bindir}/wlfreerdp
 %{_bindir}/xfreerdp
 %{_mandir}/man1/xfreerdp.*
@@ -208,7 +213,7 @@ find %{buildroot} -name "*.a" -delete
 %{_libdir}/pkgconfig/%{name}.pc
 
 %files server
-%{_bindir}/freerdp-shadow
+%{_bindir}/freerdp-shadow-cli
 
 %files -n libwinpr
 %{!?_licensedir:%global license %%doc}
@@ -223,6 +228,11 @@ find %{buildroot} -name "*.a" -delete
 %{_libdir}/pkgconfig/winpr.pc
 
 %changelog
+* Tue Jan 05 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 2:2.0.0-5.git.c3ce0c3
+- Update to c3ce0c3 commit.
+- Fork repo into https://github.com/Hubbitus/rpm-freerdp, establish copr repo https://copr.fedoraproject.org/coprs/hubbitus/remmina-next/
+- Remove RPATH from winpr-makecert
+
 * Sun Dec 13 2015 Simone Caronni <negativo17@gmail.com> - 2:2.0.0-4.git.b02943a
 - Add FFMpeg/x264 build conditional.
 

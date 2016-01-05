@@ -1,0 +1,20 @@
+#!/bin/bash
+
+. ~/bin/SHARED/assert.bash
+
+SRPM=( $( ls -1 *.src.rpm ) )
+assert "1 -eq ${#SRPM[@]}" "There must be single .src.rpm packacge in current directory!"
+
+SRPM=${SRPM[0]}
+
+# Until https://bugzilla.redhat.com/show_bug.cgi?id=1295878 resolved I could not use upload (as per https://developer.fedoraproject.org/deployment/copr/copr-cli.html)
+rsync_s $SRPM pasha@do:~/RPM_REPO/Fedora23/freerdp/
+
+/usr/bin/ssh pasha@do repomirror
+
+URL=http://rpm.hubbitus.info/Fedora23/freerdp/$SRPM
+
+echo URL should be: $URL
+
+# Unfortunately it is not pissible initiate from API now due to the bug: https://bugzilla.redhat.com/show_bug.cgi?id=1295915
+#copr build remmina-next $URL
